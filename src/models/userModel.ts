@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection";
-import { timeStamp } from "console";
 
-export const Person = sequelize.define('persons',{
-    user_id:{
+
+export const Users = sequelize.define('users',{
+    id:{
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
