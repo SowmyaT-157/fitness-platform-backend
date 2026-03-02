@@ -2,31 +2,29 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConnection";
 
 
-export const Users = sequelize.define('users',{
-    id:{
+export const Users = sequelize.define('users', {
+    id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
     },
-    name:{
+    name: {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    email:{ 
-        type:DataTypes.TEXT,
+    email: {
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: {
-          isEmail: true
+            isEmail: true
         }
     },
-    password:{
-        type:DataTypes.STRING,
-        allowNull:false,
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
     }
-    
-},
-   
 
+},
 
 )
