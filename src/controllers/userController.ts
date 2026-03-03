@@ -1,28 +1,25 @@
 import { Request, Response } from "express"
-import { newPerson } from "../services/userServices"
 import bcrypt from 'bcryptjs';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { Users } from "../models/userModel"
-import { userDetails } from "../types/userDetails";
 import 'dotenv/config'
+import { SNSClient, SubscribeCommand } from "@aws-sdk/client-sns";
 
-export const createNewPerson = async (req: Request, res: Response) => {
-    console.log("enter into controller")
-    try {
-        console.log("enter try block")
-        const data = req.body
-        console.log(data, "request data going")
-        const newTask = await newPerson(data)
-        console.log(newTask, "data comming..")
-        if (newTask) {
-            return res.status(201).json({ message: "successfully created", newTask })
-        } else {
-            return res.status(404).json({ message: "bad request" })
-        }
-    } catch (error) {
-        return res.status(500).json({ message: "network issue", error })
-    }
+export const snsClient = new SNSClient({region:"ap-south-1" })
+
+export const subscribeEmail = async (
+  emailAddress : string,
+) => {
+  const response = await snsClient.send(
+    new SubscribeCommand({
+      Protocol: "email",
+      TopicArn: process.env.ARN,
+      Endpoint: emailAddress,
+    }),
+  );
+  console.log(response);
 }
+
 
 export const registerUser = async (req: Request, res: Response) => {
     try {
@@ -41,6 +38,7 @@ export const registerUser = async (req: Request, res: Response) => {
             email,
             password: await bcrypt.hash(password, 15),
         });
+        subscribeEmail(email)
         return res.status(200).send('Registration successful');
     } catch (err) {
         return res.status(500).send('Error in registering user');
