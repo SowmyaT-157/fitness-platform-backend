@@ -23,6 +23,10 @@ export const Users = sequelize.define('users', {
     password: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue:false
     }
 
 },

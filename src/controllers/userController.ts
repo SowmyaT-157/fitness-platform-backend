@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { Users } from "../models/userModel"
 import 'dotenv/config'
-import { SNSClient, SubscribeCommand } from "@aws-sdk/client-sns";
+import { PublishCommand, SNSClient, SubscribeCommand } from "@aws-sdk/client-sns";
 
 export const snsClient = new SNSClient({region:"ap-south-1" })
 
@@ -20,6 +20,12 @@ export const subscribeEmail = async (
   console.log(response);
 }
 
+const snsNotification = new PublishCommand({
+     TopicArn: process.env.ARN,
+     Message: "successfully created"
+ });
+const response = snsClient.send(snsNotification)
+
 
 export const registerUser = async (req: Request, res: Response) => {
     try {
@@ -27,6 +33,7 @@ export const registerUser = async (req: Request, res: Response) => {
         const { name, email, password } = req.body;
         const userExists = await Users.findOne({
             where: { email }
+            
         });
         console.log("comming user exist")
         if (userExists) {
@@ -44,6 +51,7 @@ export const registerUser = async (req: Request, res: Response) => {
         return res.status(500).send('Error in registering user');
     }
 }
+
 
 
 export const signInUser = async (req: Request, res: Response) => {
