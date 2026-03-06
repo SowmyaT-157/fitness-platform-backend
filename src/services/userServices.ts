@@ -42,7 +42,7 @@ export const registerTheUser = async (userData: userDetails) => {
       },
       Body: {
         Text: {
-          Data: `It is your verification code ${code}`
+          Data: `${code}`
         }
       }
     }
@@ -56,22 +56,22 @@ export const registerTheUser = async (userData: userDetails) => {
     isVerified: false,
     otp: code
   });
-  console.log(userSignUp,"user details comming..")
+  console.log(userSignUp, "user details comming..")
   return userSignUp
 }
 
 
 export const verifyotp = async (email: string, code: string) => {
-    const user = await Users.findOne({
-        where: {
-          email,
-          otp: code,
-        }
-    });
-    if (!user){
-      return("Invalid otp")
-    }else{
-      await user.update({ isVerified: true, otp: null});
-      return user;
+  const user = await Users.findOne({
+    where: {
+      email,
+      otp: code,
     }
+  });
+  if (!user) {
+    return ("Invalid otp")
+  } else {
+    await user.update({ isVerified: true, otp: null });
+    return user;
+  }
 };
