@@ -74,6 +74,43 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
 
 
+export const signInUser = async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        const user = await Users.findOne({
+            where: { email }
+        });
+        console.log("datacomming.. ", user)
+        console.log("token comming", process.env.JWT_SECRET)
+
+        if (!user) {
+            return res.status(404).json('Email not found');
+        }
+        const passwordValid = await bcrypt.compare(password, user.dataValues.password);
+        console.log(passwordValid, "value coming..")
+
+        if (!passwordValid) {
+            return res.status(404).json('incorrect password please give the proper credentials');
+        }
+        const token = jwt.sign(
+            { id: user.dataValues.id },
+            process.env.JWT_SECRET as string,
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN,
+            } as SignOptions);
+
+        res.status(200).send({
+            id: user.dataValues.id,
+            name: user.dataValues.name,
+            email: user.dataValues.email,
+            accessToken: token,
+        });
+    } catch (err) {
+        return res.status(500).send('sign in error');
+    }
+}
+
+
 
 
 
