@@ -45,8 +45,7 @@ export const registerUser = async (req: Request, res: Response) => {
         }
         else {
             console.log("enter into user exist")
-            const registering = await registerTheUser(req.body)
-            return res.status(201).json({ message: 'verification code send to the email', registering });
+            return res.status(201).json({ message: 'This email is alaready there'});
         }
     } catch (error: any) {
         if (error.name === "MessageRejected") {
