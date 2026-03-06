@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { Users } from "../models/userModel"
 import 'dotenv/config'
-import { registerTheUser, verifyTheEmail } from "../services/userServices";
+import { registerTheUser, verifyOtp, verifyTheEmail } from "../services/userServices";
 // import { PublishCommand, SNSClient, SubscribeCommand } from "@aws-sdk/client-sns";
 
 // export const snsClient = new SNSClient({region:"ap-south-1" })
@@ -45,7 +45,7 @@ export const registerUser = async (req: Request, res: Response) => {
         }
         else {
             console.log("enter into user exist")
-            return res.status(201).json({ message: 'This email is alaready there'});
+            return res.status(201).json({ message: 'This email is alaready there' });
         }
     } catch (error: any) {
         if (error.name === "MessageRejected") {
@@ -61,6 +61,16 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 }
 
+
+export const verifyEmail = async (req: Request, res: Response) => {
+    try {
+        const { email, code } = req.body;
+        const otpCheck = await verifyOtp(email, code);
+        res.status(200).json({ message: "successfully verified the account", otpCheck });
+    } catch (error) {
+        res.status(400).json({ message: "your email and otp not matched", error });
+    }
+};
 
 
 
