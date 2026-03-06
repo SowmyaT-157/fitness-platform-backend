@@ -29,17 +29,8 @@ export const verifyTheEmail = async (userData: userDetails) => {
 
 export const registerTheUser = async (userData: userDetails) => {
   const code = Math.floor(Math.random() * 1000).toString()
-  console.log("comming the verification code", code)
-  const userSignUp = await Users.create({
-    name: userData.name,
-    email: userData.email,
-    password: await bcrypt.hash(userData.password, 15),
-    isVerified: false,
-    otp: code
-  });
 
   console.log("otp is comming", userData.otp)
-  console.log("in the service user coming", userSignUp)
   const sendMail = await ses.send(new SendEmailCommand({
     Source: process.env.SES_SENDER_EMAIL,
     Destination: {
@@ -57,5 +48,30 @@ export const registerTheUser = async (userData: userDetails) => {
     }
   }));
   console.log(sendMail, "comming the ses details")
+
+  const userSignUp = await Users.create({
+    name: userData.name,
+    email: userData.email,
+    password: await bcrypt.hash(userData.password, 15),
+    isVerified: false,
+    otp: code
+  });
+  console.log(userSignUp,"user details comming..")
   return userSignUp
 }
+
+
+export const verifyotp = async (email: string, code: string) => {
+    const user = await Users.findOne({
+        where: {
+          email,
+          otp: code,
+        }
+    });
+    if (!user){
+      return("Invalid otp")
+    }else{
+      await user.update({ isVerified: true, otp: null});
+      return user;
+    }
+};
