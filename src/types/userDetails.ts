@@ -3,5 +3,5 @@ export type userDetails = {
     name: string;
     email: string;
     password: string;
-
+    otp:number
 }
