@@ -28,7 +28,7 @@ export const verifyTheEmail = async (userData: userDetails) => {
 
 
 export const registerTheUser = async (userData: userDetails) => {
-  const code = Math.floor(Math.random() * 1000).toString()
+  const code = Math.floor(Math.random() * 10000).toString()
 
   console.log("otp is comming", userData.otp)
   const sendMail = await ses.send(new SendEmailCommand({
@@ -61,15 +61,17 @@ export const registerTheUser = async (userData: userDetails) => {
 }
 
 
-export const verifyotp = async (email: string, code: string) => {
+export const verifyOtp = async (email: string, code: string) => {
+  console.log("enter into verify otp")
   const user = await Users.findOne({
     where: {
       email,
-      otp: code,
+      otp: code
     }
   });
+  console.log("user data like otp email", user)
   if (!user) {
-    return ("Invalid otp")
+    return ("this credentials not valid")
   } else {
     await user.update({ isVerified: true, otp: null });
     return user;
