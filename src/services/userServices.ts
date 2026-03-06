@@ -65,7 +65,7 @@ export const verifyOtp = async (email: string, code: string) => {
   console.log("enter into verify otp")
   const user = await Users.findOne({
     where: {
-      email,
+      email:email,
       otp: code
     }
   });
