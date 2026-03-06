@@ -27,7 +27,12 @@ export const Users = sequelize.define('users', {
     isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue:false
+    },
+    otp: {
+       type: DataTypes.NUMBER,
+       defaultValue:null
     }
+
 
 },
 
