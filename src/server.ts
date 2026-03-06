@@ -1,11 +1,11 @@
 import express from 'express';
 import sequelize from './config/dbConnection';
 import { router } from './routes/userRoutes';
-
+import cors from 'cors'
 
 const app = express();
 app.use(express.json());
-
+app.use(cors());
 
 const PORT = process.env.PORT
 app.use("/", router)
