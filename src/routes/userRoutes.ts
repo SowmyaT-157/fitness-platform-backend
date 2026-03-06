@@ -3,6 +3,5 @@ import { registerUser, signInUser, verifyEmail } from "../controllers/userContro
 
 export const router = Router();
 router.post('/signUp', registerUser)
-router.get('/verify', verifyEmail)
-
+router.post('/verify', verifyEmail)
 router.post('/signIn',signInUser)
