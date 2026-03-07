@@ -9,6 +9,7 @@ app.use(cors());
 
 const PORT = process.env.PORT
 app.use("/", router)
+app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
 });
