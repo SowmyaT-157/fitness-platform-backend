@@ -67,8 +67,9 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const verifyEmail = async (req: Request, res: Response) => {
     try {
-        const { email, code } = req.body;
-        const otpCheck = await verifyOtp(email, code);
+        const { email, otp } = req.body;
+        const data = {email,otp}
+        const otpCheck = await verifyOtp(data);
         res.status(200).json({ message: "successfully verified the account", otpCheck });
     } catch (error) {
         res.status(400).json({ message: "your email and otp not matched", error });
