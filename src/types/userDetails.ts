@@ -4,4 +4,5 @@ export type userDetails = {
     email: string;
     password: string;
     otp:number
+    image:string
 }
