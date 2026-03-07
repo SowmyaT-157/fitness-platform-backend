@@ -29,7 +29,7 @@ export const Users = sequelize.define('users', {
         defaultValue:false
     },
     otp: {
-       type: DataTypes.NUMBER,
+       type: DataTypes.INTEGER,
        defaultValue:null
     }
 
