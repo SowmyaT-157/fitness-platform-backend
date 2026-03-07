@@ -1,8 +1,7 @@
 import { SendEmailCommand, SESClient, VerifyEmailIdentityCommand } from "@aws-sdk/client-ses";
 import { Users } from "../models/userModel"
-import { userDetails } from "../types/userDetails"
+import { userDetails, verifyDataTypes } from "../types/userDetails"
 import bcrypt from "bcrypt"
-import { Op } from "sequelize";
 
 // export const newPerson = async (newUser: userDetails) => {
 //     console.log("enter into")
@@ -64,13 +63,12 @@ export const registerTheUser = async (userData: userDetails) => {
 }
 
 
-export const verifyOtp = async (email: string, code: string) => {
+export const verifyOtp = async (data:verifyDataTypes) => {
   console.log("enter into verify otp")
   const user = await Users.findOne({
     where: {
-      email:email,
-      otp: code,
-      expiresAt: { [Op.gt]: new Date() } 
+      email:data.email,
+      otp:data.otp,
     }
   });
   console.log("user data like otp email", user)
