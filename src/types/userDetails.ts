@@ -3,6 +3,11 @@ export type userDetails = {
     name: string;
     email: string;
     password: string;
-    otp:number
+    otp:number,
     image:string
+}
+
+export interface verifyDataTypes{
+  email: string;
+  otp: number;
 }
