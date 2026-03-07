@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1004.0",
     "@aws-sdk/client-ses": "^3.1002.0",
     "@aws-sdk/client-sns": "^3.1000.0",
+    "@aws-sdk/s3-request-presigner": "^3.1004.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
@@ -9,7 +11,8 @@
     "dotenv-cli": "^11.0.0",
     "express": "^5.2.1",
     "pg": "^8.19.0",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "uuid": "^13.0.0"
   },
   "name": "fitness_backend",
   "version": "1.0.0",
