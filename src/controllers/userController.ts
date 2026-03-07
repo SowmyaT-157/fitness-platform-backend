@@ -4,6 +4,9 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import { Users } from "../models/userModel"
 import 'dotenv/config'
 import { registerTheUser, verifyOtp, verifyTheEmail } from "../services/userServices";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { v4 as uuidv4 } from "uuid";
 // import { PublishCommand, SNSClient, SubscribeCommand } from "@aws-sdk/client-sns";
 
 // export const snsClient = new SNSClient({region:"ap-south-1" })
@@ -110,6 +113,37 @@ export const signInUser = async (req: Request, res: Response) => {
     }
 }
 
+
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+  requestChecksumCalculation: "WHEN_REQUIRED", 
+});
+
+export const presigned = async (req:Request, res:Response) => {  
+const contentType = (req.query.contentType as string) || "image/jpeg";
+const fileName = `${uuidv4()}.${contentType.split('/')[1] || 'jpeg'}`;
+   const command = new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: fileName,
+    ContentType: contentType, 
+  });
+
+  try {
+      const url = await getSignedUrl(s3, command, { 
+      expiresIn: 300,
+      signableHeaders: new Set(["content-type"]), 
+    });
+     res.status(200).json({message:"successfully uploaded", uploadURL: url, fileName });
+  } catch (err) {
+     console.error("Error generating pre signed URL:", err);
+     res.status(500).json({ message: "Could not generate pre signed URL" });
+  }
+};
 
 
 
