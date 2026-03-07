@@ -2,6 +2,7 @@ import { SendEmailCommand, SESClient, VerifyEmailIdentityCommand } from "@aws-sd
 import { Users } from "../models/userModel"
 import { userDetails } from "../types/userDetails"
 import bcrypt from "bcrypt"
+import { Op } from "sequelize";
 
 // export const newPerson = async (newUser: userDetails) => {
 //     console.log("enter into")
@@ -29,6 +30,7 @@ export const verifyTheEmail = async (userData: userDetails) => {
 
 export const registerTheUser = async (userData: userDetails) => {
   const code = Math.floor(Math.random() * 10000).toString()
+  const expiry = new Date(Date.now() + 5 * 60 * 1000); 
 
   console.log("otp is comming", userData.otp)
   const sendMail = await ses.send(new SendEmailCommand({
@@ -54,7 +56,8 @@ export const registerTheUser = async (userData: userDetails) => {
     email: userData.email,
     password: await bcrypt.hash(userData.password, 15),
     isVerified: false,
-    otp: code
+    otp: code,
+    codeExpiresAt: expiry,
   });
   console.log(userSignUp, "user details comming..")
   return userSignUp
@@ -66,14 +69,15 @@ export const verifyOtp = async (email: string, code: string) => {
   const user = await Users.findOne({
     where: {
       email:email,
-      otp: code
+      otp: code,
+      expiresAt: { [Op.gt]: new Date() } 
     }
   });
   console.log("user data like otp email", user)
   if (!user) {
     return ("this credentials not valid")
   } else {
-    await user.update({ isVerified: true, otp: null });
+    await user.update({ isVerified: true, otp: null,expiresAt:null });
     return user;
   }
 };
