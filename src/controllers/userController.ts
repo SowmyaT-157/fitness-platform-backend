@@ -70,9 +70,9 @@ export const verifyEmail = async (req: Request, res: Response) => {
         const { email, otp } = req.body;
         const data = {email,otp}
         const otpCheck = await verifyOtp(data);
-        res.status(200).json({ message: "successfully verified the account", otpCheck });
+        return res.status(200).json({ message: "successfully verified the account", otpCheck });
     } catch (error) {
-        res.status(400).json({ message: "your email and otp not matched", error });
+        return res.status(400).json({ message: "your email and otp not matched", error });
     }
 };
 
@@ -103,10 +103,11 @@ export const signInUser = async (req: Request, res: Response) => {
                 expiresIn: process.env.JWT_EXPIRES_IN,
             } as SignOptions);
 
-        res.status(200).send({
+        return res.status(200).send({
             id: user.dataValues.id,
             name: user.dataValues.name,
             email: user.dataValues.email,
+            image:user.dataValues.image,
             accessToken: token,
         });
     } catch (err) {
