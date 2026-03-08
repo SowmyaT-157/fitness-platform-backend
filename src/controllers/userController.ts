@@ -34,8 +34,8 @@ import { v4 as uuidv4 } from "uuid";
 export const registerUser = async (req: Request, res: Response) => {
     try {
         console.log("enter into register")
-        const { name, email, password } = req.body;
-        const data = { name, email, password };
+        const { name, email, password,image } = req.body;
+        const data = { name, email, password,image };
         console.log("datacoming", data)
         console.log("email comming", data.email)
         const userExist = await Users.findOne({
@@ -128,6 +128,7 @@ const s3 = new S3Client({
 export const presigned = async (req:Request, res:Response) => {  
 const contentType = (req.query.contentType as string) || "image/jpeg";
 const fileName = `${uuidv4()}.${contentType.split('/')[1] || 'jpeg'}`;
+console.log(fileName,"filename")
    const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
     Key: fileName,
