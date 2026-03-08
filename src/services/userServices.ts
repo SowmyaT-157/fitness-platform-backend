@@ -56,7 +56,8 @@ export const registerTheUser = async (userData: userDetails) => {
     password: await bcrypt.hash(userData.password, 15),
     isVerified: false,
     otp: code,
-    image:userData.image
+    image:userData.image,
+    resizeImg:userData.image
 
     // codeExpiresAt: expiry,
   });
