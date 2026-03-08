@@ -109,6 +109,7 @@ export const signInUser = async (req: Request, res: Response) => {
             email: user.dataValues.email,
             image:user.dataValues.image,
             accessToken: token,
+            
         });
     } catch (err) {
         return res.status(500).send('sign in error');
