@@ -33,10 +33,17 @@ export const Users = sequelize.define('users', {
        type: DataTypes.INTEGER,
        defaultValue:null
     },
+    expiresAt:{
+        type: DataTypes.INTEGER,
+    },
     image: {
       type: DataTypes.STRING,
       allowNull: true,
-},
+    },
+    resizeImg: {
+        type:DataTypes.STRING,
+    }
+   
 
 
 },
