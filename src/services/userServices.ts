@@ -29,7 +29,7 @@ export const verifyTheEmail = async (userData: userDetails) => {
 
 export const registerTheUser = async (userData: userDetails) => {
   const code = Math.floor(Math.random() * 10000).toString()
-  const expiry = new Date(Date.now() + 5 * 60 * 1000); 
+  // const expiry = new Date(Date.now() + 5 * 60 * 1000); 
 
   console.log("otp is comming", userData.otp)
   const sendMail = await ses.send(new SendEmailCommand({
@@ -56,7 +56,9 @@ export const registerTheUser = async (userData: userDetails) => {
     password: await bcrypt.hash(userData.password, 15),
     isVerified: false,
     otp: code,
-    codeExpiresAt: expiry,
+    image:userData.image
+
+    // codeExpiresAt: expiry,
   });
   console.log(userSignUp, "user details comming..")
   return userSignUp
