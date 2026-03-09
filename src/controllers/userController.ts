@@ -4,7 +4,7 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import { Users } from "../models/userModel"
 import 'dotenv/config'
 import { registerTheUser, verifyOtp, verifyTheEmail } from "../services/userServices";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";
 // import { PublishCommand, SNSClient, SubscribeCommand } from "@aws-sdk/client-sns";
@@ -109,7 +109,7 @@ export const signInUser = async (req: Request, res: Response) => {
             email: user.dataValues.email,
             image:user.dataValues.image,
             accessToken: token,
-            
+
         });
     } catch (err) {
         return res.status(500).send('sign in error');
@@ -150,9 +150,33 @@ console.log(fileName,"filename")
 };
 
 
+const AWS_REGION="ap-south-1"
+const S3_BUCKET_NAME="source-bucket-9odh6y"
 
-
-
+export const updateImage = async (req: Request, res: Response) => {
+  try {
+    const { email, newImage } = req.body; 
+    const user = await Users.findOne({ where: { email } });
+    if (!user){
+       return res.status(404).json({ message: "User not found" });
+    } 
+    const oldImage = user.dataValues.image;
+    if (oldImage) {
+      const deleteOldImage = oldImage.split('/').pop(); 
+      if (deleteOldImage) {
+        await s3.send(new DeleteObjectCommand({
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: deleteOldImage,
+        }));
+      }
+    }
+    const newS3Url = `https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/${newImage}`;
+    await Users.update({ image: newS3Url }, { where: { email } });
+    res.status(200).json({ message: "successfully updated the new image", imageUrl: newS3Url });
+  } catch (error) {
+    res.status(500).json({ message: "update failed", error });
+  }
+};
 
 
 
