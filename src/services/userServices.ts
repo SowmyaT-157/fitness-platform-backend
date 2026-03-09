@@ -1,7 +1,8 @@
 import { SendEmailCommand, SESClient, VerifyEmailIdentityCommand } from "@aws-sdk/client-ses";
 import { Users } from "../models/userModel"
-import { userDetails, verifyDataTypes } from "../types/userDetails"
+import { newImageTypes, userDetails, verifyDataTypes } from "../types/userDetails"
 import bcrypt from "bcrypt"
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 // export const newPerson = async (newUser: userDetails) => {
 //     console.log("enter into")
@@ -58,7 +59,6 @@ export const registerTheUser = async (userData: userDetails) => {
     otp: code,
     image:userData.image,
     resizeImg:userData.image
-
     // codeExpiresAt: expiry,
   });
   console.log(userSignUp, "user details comming..")
@@ -82,3 +82,6 @@ export const verifyOtp = async (data:verifyDataTypes) => {
     return user;
   }
 };
+
+
+
