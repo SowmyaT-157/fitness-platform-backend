@@ -11,3 +11,8 @@ export interface verifyDataTypes{
   email: string;
   otp: number;
 }
+
+export type newImageTypes = {
+    email:string;
+    newImage:string;
+}
