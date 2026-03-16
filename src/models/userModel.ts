@@ -42,6 +42,10 @@ export const Users = sequelize.define('users', {
     },
     resizeImg: {
         type:DataTypes.STRING,
+    },
+    token: {
+        type:DataTypes.STRING,
+      
     }
    
 
