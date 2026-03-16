@@ -103,6 +103,20 @@ export const signInUser = async (req: Request, res: Response) => {
                 expiresIn: process.env.JWT_EXPIRES_IN,
             } as SignOptions);
 
+         const refreshToken = jwt.sign(
+            { id: user.dataValues.id },
+            process.env.REFRESH_TOKEN_SECRET as string,
+            { expiresIn: '5d' }
+        );
+        console.log("comming..refershtoken",refreshToken)
+
+        await user.update({ token: refreshToken });
+         res.cookie('refreshToken', refreshToken, {
+            httpOnly: true, 
+            secure: true,   
+            sameSite: 'strict',
+            maxAge: 5 * 24 * 60 * 60 * 1000 
+        });
         return res.status(200).send({
             id: user.dataValues.id,
             name: user.dataValues.name,
@@ -112,10 +126,10 @@ export const signInUser = async (req: Request, res: Response) => {
 
         });
     } catch (err) {
+        console.error("Sign-in error:", err);
         return res.status(500).send('sign in error');
     }
 }
-
 
 
 const s3 = new S3Client({
