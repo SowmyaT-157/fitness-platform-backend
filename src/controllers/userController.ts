@@ -33,27 +33,21 @@ import { v4 as uuidv4 } from "uuid";
 
 export const registerUser = async (req: Request, res: Response) => {
     try {
-        console.log("enter into register")
         const { name, email, password,image } = req.body;
         const data = { name, email, password,image };
-        console.log("datacoming", data)
-        console.log("email comming", data.email)
         const userExist = await Users.findOne({
             where: { email: data.email }
         });
-        console.log(data.email, "comming user exist")
         if (!userExist) {
             const register = await registerTheUser(req.body)
             return res.status(201).json({ message: 'verification code send to the email', register });
         }
         else {
-            console.log("enter into user exist")
             return res.status(201).json({ message: 'This email is alaready there' });
         }
     } catch (error: any) {
         if (error.name === "MessageRejected") {
             const verifyEmail = await verifyTheEmail(req.body)
-            console.log(verifyEmail, "verify")
             if (!verifyEmail) {
                 return res.status(401).json({ message: "email problem please check your email" })
             } else {
@@ -84,14 +78,13 @@ export const signInUser = async (req: Request, res: Response) => {
         const user = await Users.findOne({
             where: { email }
         });
-        console.log("datacomming.. ", user)
-        console.log("token comming", process.env.JWT_SECRET)
+        
 
         if (!user) {
             return res.status(404).json('Email not found');
         }
         const passwordValid = await bcrypt.compare(password, user.dataValues.password);
-        console.log(passwordValid, "value coming..")
+        
 
         if (!passwordValid) {
             return res.status(404).json('incorrect password please give the proper credentials');
@@ -108,7 +101,7 @@ export const signInUser = async (req: Request, res: Response) => {
             process.env.REFRESH_TOKEN_SECRET as string,
             { expiresIn: '5d' }
         );
-        console.log("comming..refershtoken",refreshToken)
+        
 
         await user.update({ token: refreshToken });
          res.cookie('refreshToken', refreshToken, {
@@ -126,7 +119,7 @@ export const signInUser = async (req: Request, res: Response) => {
 
         });
     } catch (err) {
-        console.error("Sign-in error:", err);
+      
         return res.status(500).send('sign in error');
     }
 }
@@ -144,7 +137,7 @@ const s3 = new S3Client({
 export const presigned = async (req:Request, res:Response) => {  
 const contentType = (req.query.contentType as string) || "image/jpeg";
 const fileName = `${uuidv4()}.${contentType.split('/')[1] || 'jpeg'}`;
-console.log(fileName,"filename")
+
    const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
     Key: fileName,
@@ -158,7 +151,7 @@ console.log(fileName,"filename")
     });
      res.status(200).json({message:"successfully uploaded", uploadURL: url, fileName });
   } catch (err) {
-     console.error("Error generating pre signed URL:", err);
+     
      res.status(500).json({ message: "Could not generate pre signed URL" });
   }
 };

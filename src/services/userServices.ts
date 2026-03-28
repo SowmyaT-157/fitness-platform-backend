@@ -2,7 +2,7 @@ import { SendEmailCommand, SESClient, VerifyEmailIdentityCommand } from "@aws-sd
 import { Users } from "../models/userModel"
 import { newImageTypes, userDetails, verifyDataTypes } from "../types/userDetails"
 import bcrypt from "bcrypt"
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+
 
 // export const newPerson = async (newUser: userDetails) => {
 //     console.log("enter into")
@@ -15,12 +15,12 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 const ses = new SESClient({ region: "ap-south-1" });
 
 export const verifyTheEmail = async (userData: userDetails) => {
-  console.log("enter into the service")
+  
   const emailAdres = await ses.send(new VerifyEmailIdentityCommand({
     EmailAddress: userData.email
   }));
   if (emailAdres) {
-    console.log("send verification mail to the user")
+    
     return emailAdres
   } else {
     console.log("didn't send the verification mail to the user")
@@ -32,7 +32,6 @@ export const registerTheUser = async (userData: userDetails) => {
   const code = Math.floor(Math.random() * 10000).toString()
   // const expiry = new Date(Date.now() + 5 * 60 * 1000); 
 
-  console.log("otp is comming", userData.otp)
   const sendMail = await ses.send(new SendEmailCommand({
     Source: process.env.SES_SENDER_EMAIL,
     Destination: {
@@ -49,7 +48,7 @@ export const registerTheUser = async (userData: userDetails) => {
       }
     }
   }));
-  console.log(sendMail, "comming the ses details")
+ 
 
   const userSignUp = await Users.create({
     name: userData.name,
@@ -61,20 +60,20 @@ export const registerTheUser = async (userData: userDetails) => {
     resizeImg:userData.image
     // codeExpiresAt: expiry,
   });
-  console.log(userSignUp, "user details comming..")
+ 
   return userSignUp
 }
 
 
 export const verifyOtp = async (data:verifyDataTypes) => {
-  console.log("enter into verify otp")
+  
   const user = await Users.findOne({
     where: {
       email:data.email,
       otp:data.otp,
     }
   });
-  console.log("user data like otp email", user)
+ 
   if (!user) {
     return ("this credentials not valid")
   } else {
