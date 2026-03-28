@@ -18,7 +18,13 @@
     "password": "Somi157#",
     "database": "fitness", 
     "host": "terraform-20260328101849090600000001.cx6a0ge22ym8.ap-south-1.rds.amazonaws.com",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   }
 }
 
